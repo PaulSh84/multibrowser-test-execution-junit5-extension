@@ -1,23 +1,18 @@
-import extensions.RemoteWebDriverExtension;
-import extensions.RemoteWebDriverParameterResolver;
+import annotations.TestContainerTemplate;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestTemplate;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-@ExtendWith(RemoteWebDriverExtension.class)
+@TestContainerTemplate
 public class MultiBrowserDemoTest {
 
-    RemoteWebDriver driver;
-
-
     @SneakyThrows
+    @DisplayName("search in google")
     @TestTemplate
-    @ExtendWith(RemoteWebDriverParameterResolver.class)
     public void testGrid(RemoteWebDriver driver) {
-        this.driver = driver;
         driver.get("https://www.google.com/");
         WebElement search = driver.findElement(By.name("q"));
         search.sendKeys("JUnit5 extensions");
