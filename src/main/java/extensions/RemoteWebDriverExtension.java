@@ -1,8 +1,9 @@
 package extensions;
 
-import core.driver.ChromeRemoteDriverImpl;
-import core.driver.FirefoxRemoteDriverImpl;
+import annotations.MultiBrowserTest;
 import core.driver.RemoteDriver;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,7 +25,9 @@ public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCa
 
     @Override
     public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
-        return Stream.of(invocationContext(new ChromeRemoteDriverImpl()), invocationContext(new FirefoxRemoteDriverImpl()));
+        Method[] methods = context.getRequiredTestClass().getDeclaredMethods();
+        MultiBrowserTest annotation = Arrays.stream(methods).map(method -> method.getAnnotation(MultiBrowserTest.class)).findFirst().orElseThrow(()-> new IllegalArgumentException("Annotation is not found"));
+        return Arrays.stream(annotation.drivers()).map(driverType -> invocationContext(driverType.driver()));
     }
 
     private TestTemplateInvocationContext invocationContext(RemoteDriver remoteDriver) {

@@ -1,8 +1,7 @@
 package core.driver;
 
 import core.RemoteWebDriverFactory;
-import io.github.bonigarcia.seljup.SeleniumJupiter;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import java.util.Optional;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -10,12 +9,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class ChromeRemoteDriverImpl implements RemoteDriver {
     private final RemoteWebDriverFactory factory;
 
-    @RegisterExtension
-    SeleniumJupiter jupiter = new SeleniumJupiter();
-
     public ChromeRemoteDriverImpl() {
+        String gridUrl = Optional.ofNullable(System.getProperty("prop.selenium.grid.url")).orElseThrow(()-> new IllegalArgumentException("SeleniumGrid URL is not provided in VM options"));
         DesiredCapabilities caps = new DesiredCapabilities("chrome", "80.0.3987.106", Platform.LINUX);
-        factory = new RemoteWebDriverFactory.Builder().serverURL(jupiter.getConfig().getSeleniumServerUrl()).capabilities(caps).build();
+        factory = new RemoteWebDriverFactory.Builder().serverURL(gridUrl).capabilities(caps).build();
     }
 
     @Override
