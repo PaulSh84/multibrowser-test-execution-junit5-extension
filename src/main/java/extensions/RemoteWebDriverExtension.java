@@ -2,7 +2,6 @@ package extensions;
 
 import annotations.MultiBrowserTest;
 import core.driver.RemoteDriver;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCallback, BeforeAllCallback, AfterAllCallback, TestTemplateInvocationContextProvider {
+public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCallback, TestTemplateInvocationContextProvider {
 
     private static final Logger log = LoggerFactory.getLogger(RemoteWebDriverExtension.class);
     private RemoteWebDriver driver;
@@ -25,8 +24,7 @@ public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCa
 
     @Override
     public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
-        Method[] methods = context.getRequiredTestClass().getDeclaredMethods();
-        MultiBrowserTest annotation = Arrays.stream(methods).map(method -> method.getAnnotation(MultiBrowserTest.class)).findFirst().orElseThrow(()-> new IllegalArgumentException("Annotation is not found"));
+        MultiBrowserTest annotation = context.getRequiredTestMethod().getAnnotation(MultiBrowserTest.class);
         return Arrays.stream(annotation.drivers()).map(driverType -> invocationContext(driverType.driver()));
     }
 
@@ -55,12 +53,6 @@ public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCa
         };
     }
 
-
-    @Override
-    public void beforeAll(ExtensionContext context) {
-        log.info("BeforeAll method started");
-    }
-
     @Override
     public void beforeEach(ExtensionContext context) {
         log.info("BeforeEach method started");
@@ -75,8 +67,4 @@ public class RemoteWebDriverExtension implements BeforeEachCallback, AfterEachCa
         log.info("driver closed");
     }
 
-    @Override
-    public void afterAll(ExtensionContext context) {
-        log.info("AfterAll method started");
-    }
 }
