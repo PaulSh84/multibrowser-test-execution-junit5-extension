@@ -14,7 +14,7 @@ services:
       - "9001:5900"
 
   chrome:
-    image: selenium/node-chrome-debug:3.141.59
+    image: selenium/node-chrome-debug
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
@@ -27,6 +27,6 @@ services:
       - "9002:5900"
 
   hub:
-    image: selenium/hub:3.141.59
+    image: selenium/hub
     ports:
       - "4444:4444"
