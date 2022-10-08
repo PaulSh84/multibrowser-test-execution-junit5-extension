@@ -1,30 +1,18 @@
 package core;
 
 import java.net.URL;
+import javax.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 
-public class RemoteWebDriverFactory {
-    @NonNull
-    private final String serverUrl;
-    @NonNull
-    private final Capabilities capabilities;
-
-    private RemoteWebDriverFactory(Builder builder) {
-        serverUrl = builder.serverUrl;
-        capabilities = builder.capabilities;
-    }
-
-    @SneakyThrows
-    public RemoteWebDriver getDriver() {
-        return new RemoteWebDriver(new URL(serverUrl), capabilities);
-    }
-
+public class RemoteWebDriverManager {
     public static class Builder {
+        @NotEmpty
         private String serverUrl;
+        @NonNull
         private Capabilities capabilities;
 
        public Builder serverURL(String serverUrl) {
@@ -36,10 +24,8 @@ public class RemoteWebDriverFactory {
         }
 
         @SneakyThrows
-        public RemoteWebDriverFactory build() {
-           return new RemoteWebDriverFactory(this);
+        public RemoteWebDriver build() {
+          return new RemoteWebDriver(new URL(serverUrl), capabilities);
         }
-
     }
-
 }
